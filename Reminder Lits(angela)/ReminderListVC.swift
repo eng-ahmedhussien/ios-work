@@ -9,26 +9,29 @@ import UIKit
 
 class ReminderListVC: UITableViewController{
     
-    var Rlist = ["list 1","list 2","list 3"]
-    let uDefault = UserDefaults.standard
+    var Rlist = [Item]()
+    //MARK: customItems.plist file path
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("customItems.plist")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let  list = uDefault.array(forKey: "RlistUpdate") as? [String]{
-            Rlist = list
-        }
-        
+//        addNewItem(title: "list1")
+//        addNewItem(title: "list2")
+//        addNewItem(title: "list3")
+//        addNewItem(title: "list4")
+        //MARK: decode (read) data from customItems.plist
+        loadItemFromPlist()
     }
-    
+//MARK: addbutton. to add item in list
     @IBAction func addButton(_ sender: UIBarButtonItem) {
-        
         var textField = UITextField()
         let alert = UIAlertController(title:"add item", message:"", preferredStyle: .alert)
         let okButton = UIAlertAction(title: "add", style: .default) { action in
             if textField.text != ""{
-                self.Rlist.append(textField.text!)
-                self.uDefault.set(self.Rlist, forKey: "RlistUpdate")
+                self.addNewItem(title: textField.text!)
+               //MARK: add(encode) item to customItems.plist
+                self.saveItemsInPlist()
             }
-            self.tableView.reloadData()
         }
         //MARK: add textfiled in alert
         alert.addTextField { alertTextField in
@@ -44,30 +47,50 @@ class ReminderListVC: UITableViewController{
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-         let cell = tableView.dequeueReusableCell(withIdentifier: "tablecell", for: indexPath)
-            cell.textLabel?.text = Rlist[indexPath.row]
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tablecell", for: indexPath)
+        cell.textLabel?.text = Rlist[indexPath.row].title
+        //MARK: trenary condition /    value = condition ? true value : false value
+        cell.accessoryType = Rlist[indexPath.row].checked == true ? .checkmark : .none
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //MARK: animation when deselect row
-        // tableView.deselectRow(at: indexPath,animated: true)
+
+        Rlist[indexPath.row].checked = !Rlist[indexPath.row].checked
+        saveItemsInPlist()
+        tableView.reloadData()
         
-        if  tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        else{
-            //MARK: checkmark row when selected
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         Rlist.remove(at: indexPath.row)
-        tableView.reloadData()
+        saveItemsInPlist()
     }
    
+    func saveItemsInPlist(){
+        do{
+            let data = try PropertyListEncoder().encode(Rlist)
+            try data.write(to:dataFilePath!)
+        }
+        catch{
+            print("error !! \(error)")
+        }
+        tableView.reloadData()
+    }
+    func loadItemFromPlist(){
+        do{
+            if let data =  try? Data(contentsOf: dataFilePath!){
+                Rlist = try PropertyListDecoder().decode([Item].self, from: data)
+            }
+        }
+        catch{
+            print("error !! \(error)")
+        }
+    }
+    func addNewItem(title:String){
+        let i = Item()
+        i.title = title
+        Rlist.append(i)
+    }
 }
-
-
 
