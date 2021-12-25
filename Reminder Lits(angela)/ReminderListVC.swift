@@ -6,21 +6,19 @@
 //
 
 import UIKit
+import CoreData
 
 class ReminderListVC: UITableViewController{
     
     var Rlist = [Item]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     //MARK: customItems.plist file path
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("customItems.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        addNewItem(title: "list1")
-//        addNewItem(title: "list2")
-//        addNewItem(title: "list3")
-//        addNewItem(title: "list4")
         //MARK: decode (read) data from customItems.plist
-        loadItemFromPlist()
+        //loadItemFromPlist()
     }
 //MARK: addbutton. to add item in list
     @IBAction func addButton(_ sender: UIBarButtonItem) {
@@ -28,9 +26,9 @@ class ReminderListVC: UITableViewController{
         let alert = UIAlertController(title:"add item", message:"", preferredStyle: .alert)
         let okButton = UIAlertAction(title: "add", style: .default) { action in
             if textField.text != ""{
-                self.addNewItem(title: textField.text!)
-               //MARK: add(encode) item to customItems.plist
-                self.saveItemsInPlist()
+                self.addNewItem(title: textField.text!,checked:false)
+                //MARK: add item to coredata
+                self.saveItems()
             }
         }
         //MARK: add textfiled in alert
@@ -57,39 +55,39 @@ class ReminderListVC: UITableViewController{
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         Rlist[indexPath.row].checked = !Rlist[indexPath.row].checked
-        saveItemsInPlist()
+        saveItems()
         tableView.reloadData()
         
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         Rlist.remove(at: indexPath.row)
-        saveItemsInPlist()
+        saveItems()
     }
    
-    func saveItemsInPlist(){
+    func saveItems(){
         do{
-            let data = try PropertyListEncoder().encode(Rlist)
-            try data.write(to:dataFilePath!)
+            try context.save()
         }
         catch{
-            print("error !! \(error)")
+            print(" ahmed error !!\(error)")
         }
         tableView.reloadData()
     }
-    func loadItemFromPlist(){
-        do{
-            if let data =  try? Data(contentsOf: dataFilePath!){
-                Rlist = try PropertyListDecoder().decode([Item].self, from: data)
-            }
-        }
-        catch{
-            print("error !! \(error)")
-        }
-    }
-    func addNewItem(title:String){
-        let i = Item()
+//    func loadItemFromPlist(){
+//        do{
+//            if let data =  try? Data(contentsOf: dataFilePath!){
+//                Rlist = try PropertyListDecoder().decode([Item].self, from: data)
+//            }
+//        }
+//        catch{
+//            print("error !! \(error)")
+//        }
+//    }
+    func addNewItem(title:String,checked:Bool){
+        let i = Item(context:context)
         i.title = title
+        i.checked = checked
         Rlist.append(i)
     }
 }
