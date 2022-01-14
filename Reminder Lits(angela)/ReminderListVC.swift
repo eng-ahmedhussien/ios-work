@@ -11,23 +11,22 @@ import CoreData
 class ReminderListVC: UITableViewController{
     
     var Rlist = [Item]()
+    //MARK: temporary area where you put data befor added to database
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    //MARK: customItems.plist file path
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("customItems.plist")
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         //MARK: decode (read) data from customItems.plist
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         //loadItemFromPlist()
     }
-//MARK: addbutton. to add item in list
+    //MARK: addbutton. to add item in list
     @IBAction func addButton(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title:"add item", message:"", preferredStyle: .alert)
         let okButton = UIAlertAction(title: "add", style: .default) { action in
             if textField.text != ""{
                 self.addNewItem(title: textField.text!,checked:false)
-                //MARK: add item to coredata
+                //MARK: add item to context (temproray area)
                 self.saveItems()
             }
         }
@@ -43,7 +42,6 @@ class ReminderListVC: UITableViewController{
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Rlist.count
     }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tablecell", for: indexPath)
         cell.textLabel?.text = Rlist[indexPath.row].title
@@ -61,13 +59,15 @@ class ReminderListVC: UITableViewController{
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        Rlist.remove(at: indexPath.row)
+        //MARK: delete item
+        context.delete(Rlist.remove(at: indexPath.row))
         saveItems()
     }
    
     func saveItems(){
         do{
             try context.save()
+            
         }
         catch{
             print(" ahmed error !!\(error)")
