@@ -15,9 +15,8 @@ class ReminderListVC: UITableViewController{
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func viewDidLoad() {
         super.viewDidLoad()
-        //MARK: decode (read) data from customItems.plist
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        //loadItemFromPlist()
+        //MARK: loadItem from context (temproray area)
+        loadItem()
     }
     //MARK: addbutton. to add item in list
     @IBAction func addButton(_ sender: UIBarButtonItem) {
@@ -74,16 +73,15 @@ class ReminderListVC: UITableViewController{
         }
         tableView.reloadData()
     }
-//    func loadItemFromPlist(){
-//        do{
-//            if let data =  try? Data(contentsOf: dataFilePath!){
-//                Rlist = try PropertyListDecoder().decode([Item].self, from: data)
-//            }
-//        }
-//        catch{
-//            print("error !! \(error)")
-//        }
-//    }
+    func loadItem(){
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do{
+            Rlist = try context.fetch(request)
+        }
+        catch{
+            printContent("error fetching data \(error)")
+        }
+    }
     func addNewItem(title:String,checked:Bool){
         let i = Item(context:context)
         i.title = title
