@@ -77,8 +77,7 @@ class ReminderListVC: UITableViewController{
         }
         tableView.reloadData()
     }
-    func loadItem(){
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItem(request : NSFetchRequest<Item> = Item.fetchRequest()){
         do{
             Rlist = try context.fetch(request)
         }
@@ -104,18 +103,10 @@ extension ReminderListVC : UISearchBarDelegate{
         else{
             let request : NSFetchRequest<Item> = Item.fetchRequest()
             //query
-            let p = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-            request.predicate = p
+            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
             // sorting result accending
             request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-            do{
-                Rlist = try context.fetch(request) 
-            }
-            catch{
-                printContent("error fetching data \(error)")
-            }
-            //refresh
-            tableView.reloadData()
+            loadItem(request: request)
         }
     }
 }
