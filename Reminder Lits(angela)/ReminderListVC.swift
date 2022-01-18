@@ -13,11 +13,15 @@ class ReminderListVC: UITableViewController{
     var Rlist = [Item]()
     //MARK: temporary area where you put data befor added to database
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //MARK: loadItem from context (temproray area)
         loadItem()
+        searchBar.delegate = self
     }
+    
     //MARK: addbutton. to add item in list
     @IBAction func addButton(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -81,6 +85,8 @@ class ReminderListVC: UITableViewController{
         catch{
             printContent("error fetching data \(error)")
         }
+        //refresh
+        tableView.reloadData()
     }
     func addNewItem(title:String,checked:Bool){
         let i = Item(context:context)
@@ -89,4 +95,27 @@ class ReminderListVC: UITableViewController{
         Rlist.append(i)
     }
 }
-
+//MARK: sreach bar methoud
+extension ReminderListVC : UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if searchBar.text == ""{
+            loadItem()
+        }
+        else{
+            let request : NSFetchRequest<Item> = Item.fetchRequest()
+            //query
+            let p = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+            request.predicate = p
+            // sorting result accending
+            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+            do{
+                Rlist = try context.fetch(request) 
+            }
+            catch{
+                printContent("error fetching data \(error)")
+            }
+            //refresh
+            tableView.reloadData()
+        }
+    }
+}
