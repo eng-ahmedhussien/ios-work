@@ -52,7 +52,6 @@ class ReminderListVC: UITableViewController{
         cell.accessoryType = Rlist[indexPath.row].checked == true ? .checkmark : .none
         return cell
     }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         Rlist[indexPath.row].checked = !Rlist[indexPath.row].checked
@@ -60,12 +59,11 @@ class ReminderListVC: UITableViewController{
         tableView.reloadData()
         
     }
-    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        //MARK: delete item
-        context.delete(Rlist.remove(at: indexPath.row))
-        saveItems()
-    }
+    //MARK: delete item
+    context.delete(Rlist.remove(at: indexPath.row))
+    saveItems()
+}
    
     func saveItems(){
         do{
@@ -94,19 +92,27 @@ class ReminderListVC: UITableViewController{
         Rlist.append(i)
     }
 }
-//MARK: sreach bar methoud
+//MARK: sreachbar methouds
 extension ReminderListVC : UISearchBarDelegate{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if searchBar.text == ""{
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        //query
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        // sorting result accending
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        loadItem(request: request)
+        
+    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0{
             loadItem()
-        }
-        else{
-            let request : NSFetchRequest<Item> = Item.fetchRequest()
-            //query
-            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-            // sorting result accending
-            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-            loadItem(request: request)
+            //searchBar.resignFirstResponder() will not work without placed inside DispatchQueue.main.async
+            DispatchQueue.main.async {
+                // remove keyboard indicator from searchbar and hide keyboard
+                searchBar.resignFirstResponder()
+            }
         }
     }
 }
+
+
