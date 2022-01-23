@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FC05894C2777D8E0005BC2F2 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FC0589492777D8E0005BC2F2 /* DataModel.xcdatamodeld */; };
+		FC221A1F279DE354003BBC13 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC221A1E279DE354003BBC13 /* CategoryVC.swift */; };
 		FC30D608274F545300AD804D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC30D607274F545300AD804D /* AppDelegate.swift */; };
 		FC30D60A274F545300AD804D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC30D609274F545300AD804D /* SceneDelegate.swift */; };
 		FC30D60C274F545300AD804D /* ReminderListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC30D60B274F545300AD804D /* ReminderListVC.swift */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		FC05894A2777D8E0005BC2F2 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		FC05894B2777D8E0005BC2F2 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		FC221A1E279DE354003BBC13 /* CategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryVC.swift; sourceTree = "<group>"; };
 		FC30D604274F545300AD804D /* Reminder Lits(angela).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Reminder Lits(angela).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC30D607274F545300AD804D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FC30D609274F545300AD804D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 		FCE60B83277377F1001F6CDB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FC221A1E279DE354003BBC13 /* CategoryVC.swift */,
 				FC30D60B274F545300AD804D /* ReminderListVC.swift */,
 			);
 			name = Controllers;
@@ -176,6 +179,7 @@
 			files = (
 				FC30D60C274F545300AD804D /* ReminderListVC.swift in Sources */,
 				FC05894C2777D8E0005BC2F2 /* DataModel.xcdatamodeld in Sources */,
+				FC221A1F279DE354003BBC13 /* CategoryVC.swift in Sources */,
 				FC30D608274F545300AD804D /* AppDelegate.swift in Sources */,
 				FC30D60A274F545300AD804D /* SceneDelegate.swift in Sources */,
 			);
